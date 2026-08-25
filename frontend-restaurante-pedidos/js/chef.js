@@ -1,87 +1,96 @@
 // chef.js
-// Lógica de chef.html: lista "Por preparar" (pending) y "Preparando" (preparing)
+// Lógica de chef.html: lista "Por preparar" (estado "preparar") y "Preparando" (estado "preparando")
+// Coincide con: GET /chef -> controller.chef
+//               PUT /preparando { id } -> pasa el pedido a "preparando"
+//               PUT /listo { id } -> pasa el pedido a "entregar" (queda listo para el mesero)
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
 
 document.addEventListener('DOMContentLoaded', function () {
   cargarPedidosChef();
 });
 
 async function cargarPedidosChef() {
-  await cargarLista('pending', '#PorPreparar tbody', 'preparing', 'Empezar a preparar');
-  await cargarLista('preparing', '#Preparando tbody', 'ready', 'Marcar como listo');
-}
-
-async function cargarLista(estadoActual, selectorTbody, siguienteEstado, textoBoton) {
-  const tbody = document.querySelector(selectorTbody);
-  if (!tbody) return;
+  const tbodyPorPreparar = document.querySelector('#PorPreparar tbody');
+  const tbodyPreparando = document.querySelector('#Preparando tbody');
+  if (!tbodyPorPreparar || !tbodyPreparando) return;
 
   try {
-    const response = await fetch(`${API_BASE}/orders?status=${estadoActual}`, {
-      headers: authHeaders()
-    });
+    const response = await fetch(`${API_BASE}/chef`);
+    const data = await response.json();
 
-    if (!response.ok) {
-      tbody.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
+    if (!response.ok || !data.success) {
+      tbodyPorPreparar.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
+      tbodyPreparando.innerHTML = '';
       return;
     }
 
-    const pedidos = await response.json();
-    tbody.innerHTML = '';
+    const porPreparar = (data.data && data.data.porPreparar) || [];
+    const preparando = (data.data && data.data.preparando) || [];
 
-    if (!pedidos.length) {
-      tbody.innerHTML = '<tr><td colspan="3">No hay pedidos.</td></tr>';
-      return;
-    }
-
-    pedidos.forEach(function (pedido) {
-      tbody.appendChild(renderFilaChef(pedido, siguienteEstado, textoBoton));
-    });
+    renderTabla(tbodyPorPreparar, porPreparar, 'Empezar a preparar', pasarAPreparando);
+    renderTabla(tbodyPreparando, preparando, 'Marcar como listo', pasarAListo);
   } catch (error) {
-    console.error('Error al cargar pedidos:', error);
-    tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor.</td></tr>';
+    console.error('Error al cargar pedidos del chef:', error);
+    tbodyPorPreparar.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor.</td></tr>';
+    tbodyPreparando.innerHTML = '';
   }
 }
 
-function renderFilaChef(pedido, siguienteEstado, textoBoton) {
-  const tr = document.createElement('tr');
+function renderTabla(tbody, pedidos, textoBoton, accion) {
+  tbody.innerHTML = '';
 
-  const platillos = (pedido.items || []).map(function (item) {
-    return item.qty + 'x ' + item.name;
-  }).join(', ');
+  if (!pedidos.length) {
+    tbody.innerHTML = '<tr><td colspan="3">No hay pedidos.</td></tr>';
+    return;
+  }
 
-  const tdPlatillo = document.createElement('td');
-  tdPlatillo.textContent = platillos;
+  pedidos.forEach(function (pedido) {
+    const tr = document.createElement('tr');
 
-  const tdMesa = document.createElement('td');
-  tdMesa.textContent = pedido.table || pedido.client || '-';
+    const tdPlatillo = document.createElement('td');
+    tdPlatillo.textContent = pedido.cantidad + 'x ' + pedido.platillo;
 
-  const tdEstado = document.createElement('td');
-  const btn = document.createElement('button');
-  btn.className = 'btn btn-sm btn-primary';
-  btn.textContent = textoBoton;
-  btn.addEventListener('click', function () {
-    cambiarEstadoPedido(pedido.id, siguienteEstado);
+    const tdMesa = document.createElement('td');
+    tdMesa.textContent = pedido.mesa || pedido.cliente || '-';
+
+    const tdEstado = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm btn-primary';
+    btn.textContent = textoBoton;
+    btn.addEventListener('click', function () {
+      accion(pedido.id);
+    });
+    tdEstado.appendChild(btn);
+
+    tr.appendChild(tdPlatillo);
+    tr.appendChild(tdMesa);
+    tr.appendChild(tdEstado);
+
+    tbody.appendChild(tr);
   });
-  tdEstado.appendChild(btn);
-
-  tr.appendChild(tdPlatillo);
-  tr.appendChild(tdMesa);
-  tr.appendChild(tdEstado);
-
-  return tr;
 }
 
-async function cambiarEstadoPedido(id, nuevoEstado) {
+async function pasarAPreparando(id) {
+  await actualizarEstado('/preparando', id);
+}
+
+async function pasarAListo(id) {
+  await actualizarEstado('/listo', id);
+}
+
+async function actualizarEstado(endpoint, id) {
   try {
-    const response = await fetch(`${API_BASE}/orders/${id}`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ status: nuevoEstado })
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
     });
 
-    if (!response.ok) {
-      alert('No fue posible actualizar el estado del pedido.');
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      alert(data.message || 'No fue posible actualizar el estado del pedido.');
       return;
     }
 
@@ -90,15 +99,4 @@ async function cambiarEstadoPedido(id, nuevoEstado) {
     console.error('Error al actualizar pedido:', error);
     alert('No fue posible conectar con el servidor.');
   }
-}
-
-function getToken() {
-  return localStorage.getItem('token');
-}
-
-function authHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + getToken()
-  };
 }

@@ -1,7 +1,8 @@
 // login.js
 // Lógica de inicio de sesión para login.html
+// Coincide con: POST /login -> controller.login_in (routes.js / controller.js)
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnIniciar = document.querySelector('.btn-iniciar');
@@ -20,27 +21,27 @@ async function iniciarSesion() {
   }
 
   try {
-    const response = await fetch(`${API_BASE}/auth/login`, {
+    const response = await fetch(`${API_BASE}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user, password })
     });
 
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      alert(data.message || 'Usuario o contraseña incorrectos.');
+    const data = await response.json();
+
+    // El backend responde { success, message, user } — no hay token.
+    if (!response.ok || !data.success) {
+      alert(data.message || 'Usuario o contraseña incorrecta.');
       return;
     }
 
-    const data = await response.json();
-    // Se espera { token, user: { username, name, role } }
-    localStorage.setItem('token', data.token);
+    // Guardamos el usuario (incluye "rol") para usarlo en las demás páginas.
     localStorage.setItem('user', JSON.stringify(data.user));
 
-    redirigirSegunRol(data.user ? data.user.role : null);
+    redirigirSegunRol(data.user ? data.user.rol : null);
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
-    alert('No fue posible conectar con el servidor. Intenta nuevamente.');
+    alert('No fue posible conectar con el servidor. Verifica que el backend esté corriendo en ' + API_BASE);
   }
 }
 
