@@ -1,7 +1,8 @@
 // registro.js
 // Lógica de registro de usuarios para registro.html
+// Coincide con: POST /register -> controller.save_register
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnGuardar = document.querySelector('.btn-guardar');
@@ -22,14 +23,15 @@ async function registrarUsuario() {
   }
 
   try {
-    const response = await fetch(`${API_BASE}/auth/register`, {
+    const response = await fetch(`${API_BASE}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: user, name, role: rol, password })
+      body: JSON.stringify({ user, name, rol, password })
     });
 
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
       alert(data.message || 'No fue posible registrar el usuario.');
       return;
     }
@@ -38,6 +40,6 @@ async function registrarUsuario() {
     window.location.href = 'login.html';
   } catch (error) {
     console.error('Error al registrar usuario:', error);
-    alert('No fue posible conectar con el servidor. Intenta nuevamente.');
+    alert('No fue posible conectar con el servidor. Verifica que el backend esté corriendo en ' + API_BASE);
   }
 }
