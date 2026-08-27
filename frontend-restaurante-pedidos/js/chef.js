@@ -1,7 +1,7 @@
 // chef.js
-// Lógica de chef.html: lista "Por preparar" (pending) y "Preparando" (preparing)
+// Lógica de chef.html
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005';
 
 document.addEventListener('DOMContentLoaded', function () {
   cargarPedidosChef();
@@ -21,12 +21,14 @@ async function cargarLista(estadoActual, selectorTbody, siguienteEstado, textoBo
       headers: authHeaders()
     });
 
-    if (!response.ok) {
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || (data && data.success === false)) {
       tbody.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
       return;
     }
 
-    const pedidos = await response.json();
+    const pedidos = Array.isArray(data) ? data : (data ? data.orders || [] : []);
     tbody.innerHTML = '';
 
     if (!pedidos.length) {
@@ -39,7 +41,7 @@ async function cargarLista(estadoActual, selectorTbody, siguienteEstado, textoBo
     });
   } catch (error) {
     console.error('Error al cargar pedidos:', error);
-    tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
   }
 }
 
@@ -80,15 +82,17 @@ async function cambiarEstadoPedido(id, nuevoEstado) {
       body: JSON.stringify({ status: nuevoEstado })
     });
 
-    if (!response.ok) {
-      alert('No fue posible actualizar el estado del pedido.');
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || (data.success !== undefined && !data.success)) {
+      alert(data.message || 'No fue posible actualizar el estado del pedido.');
       return;
     }
 
     cargarPedidosChef();
   } catch (error) {
     console.error('Error al actualizar pedido:', error);
-    alert('No fue posible conectar con el servidor.');
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }
 

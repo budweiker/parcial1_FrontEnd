@@ -1,7 +1,7 @@
 // login.js
 // Lógica de inicio de sesión para login.html
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005';
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnIniciar = document.querySelector('.btn-iniciar');
@@ -20,27 +20,26 @@ async function iniciarSesion() {
   }
 
   try {
-    const response = await fetch(`${API_BASE}/auth/login`, {
+    const response = await fetch(`${API_BASE}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user, password })
     });
 
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || (data.success !== undefined && !data.success)) {
       alert(data.message || 'Usuario o contraseña incorrectos.');
       return;
     }
 
-    const data = await response.json();
-    // Se espera { token, user: { username, name, role } }
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
 
     redirigirSegunRol(data.user ? data.user.role : null);
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
-    alert('No fue posible conectar con el servidor. Intenta nuevamente.');
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }
 
