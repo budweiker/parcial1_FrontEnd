@@ -1,0 +1,98 @@
+###RUTAS API RESTAURANTE Ratatouille
+
+###peticion get - Mensaje
+get http://localhost:3005/
+
+###peticion post - verificar un usuario
+Post http://localhost:3005/login
+Content-Type: application/json
+
+{
+    "user": "ratatui",
+    "password": "1234"
+}
+
+###peticion post - crear un usuario
+Post http://localhost:3005/register
+Content-Type: application/json
+
+{
+    "user": "Pedroncho",
+    "name": "Pedro Reales",
+    "rol": "chef",
+    "password": "1234"
+}
+
+//CAJERO - PETICIONES
+###peticion get - Obtener pedidos
+get http://localhost:3005/pedidos
+
+###peticion post - crear un pedido
+Post http://localhost:3005/pedido
+Content-Type: application/json
+
+{
+    "platillo": "pizza calzoni",
+    "precio": 35000,
+    "mesa": 1,
+    "cantidad": 1,
+    "observaciones": "arto queso",
+    "cliente": "Rascael Alberto",
+    "fecha": "2020-11-16T20:00"
+}
+
+###peticion put para actualizar pedido
+PUT http://localhost:3005/pedido
+Content-Type: application/json
+
+{
+    "id": 1,
+    "platillo": "Sopa de pollo",
+    "precio": 20000,
+    "mesa": 2,
+    "cantidad": 2,
+    "observaciones": "sin cebolla y tomate",
+    "cliente": "Rosa Melo",
+    "fecha": "2020-11-16T20:00",
+    "estado": "por preparar"
+}
+
+###peticion detele para eliminar pedido
+DELETE http://localhost:3005/pedido
+Content-Type: application/json
+
+{
+    "id": 18
+}
+
+//CHEF - PETICIONES
+###peticion GET para obtener pedidos para el chef
+GET http://localhost:3005/chef
+
+###peticion put para actualizar pedido
+PUT http://localhost:3005/preparando
+Content-Type: application/json
+
+{
+    "id": 1
+}
+
+###peticion put para actualizar pedido
+PUT http://localhost:3005/listo
+Content-Type: application/json
+
+{
+    "id": 1
+}
+
+//MESERO - PETICIONES
+###peticion GET para obtener pedidos para el mesero
+GET http://localhost:3005/mesero
+
+###peticion put para actualizar pedido
+PUT http://localhost:3005/entregado
+Content-Type: application/json
+
+{
+    "id": 1
+}

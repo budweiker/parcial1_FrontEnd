@@ -1,0 +1,114 @@
+<%- include('partials/_header.ejs') %>
+
+
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            <div class="text-center py-3">
+                <h2 class="display-4">ORDENES</h2>
+            </div>
+            <!-- Primer cuadro -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Por preparar</h2>
+                    </div>
+                    <table class="table table-bordered table-hover">
+                        <!--thead es la cabecera de la tabla-->
+                        <thead>
+                            <!--tr es una fila-->
+                            <tr>
+                                <th>N</th>
+                                <th>Platillo</th>
+                                <th>Cantidad</th>
+                                <th>Cliente</th>
+                                <th>Observaciones</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% if (dataPorPreparar) {%>
+                                <% for (var i=0; i < dataPorPreparar.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <%= dataPorPreparar[i].id %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorPreparar[i].platillo %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorPreparar[i].cantidad %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorPreparar[i].cliente %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorPreparar[i].observaciones %>
+                                        </td>
+                                        <td>
+                                            <%=console.log(dataPorPreparar[i].id) %>
+                                            <form action="/preparando/<%= dataPorPreparar[i].id %>" method="post">
+                                                <button type="submit" class="btn btn-success">Preparar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Segundo cuadro -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Preparando</h2>
+                    </div>
+                    <table class="table table-bordered table-hover">
+                        <!--thead es la cabecera de la tabla-->
+                        <thead>
+                            <!--tr es una fila-->
+                            <tr>
+                                <th>N</th>
+                                <th>Platillo</th>
+                                <th>Cantidad</th>
+                                <th>Cliente</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% if (dataPreparando) {%>
+                                <% for (var i=0; i < dataPreparando.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <%= dataPreparando[i].id %>
+                                        </td>
+                                        <td>
+                                            <%= dataPreparando[i].platillo %>
+                                        </td>
+                                        <td>
+                                            <%= dataPreparando[i].cantidad %>
+                                        </td>
+                                        <td>
+                                            <%= dataPreparando[i].cliente %>
+                                        </td>
+                                        <td>
+                                            <%=console.log(dataPreparando[i].id) %>
+                                            <form action="/listo/<%= dataPreparando[i].id %>" method="post">
+                                                <button type="submit" class="btn btn-danger">Por entregar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <%- include('partials/_footer.ejs') %>

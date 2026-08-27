@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MESERO - HOME</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top w3-hide-small">
+      <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+        <a href="#" class="w3-bar-item w3-button">HOME</a>
+        <a href="pedidos.html" class="w3-bar-item w3-button"><img src="imagenes/pedidos.png" width="30"> VER PEDIDOS</a>
+        <a href="index.html"  class="me-5 mt-1 fs-4 btn btn-danger float-end w3-bar-item">SALIR</a>
+        <a href="#" class="me-5 mt-1 fs-4 float-end w3-bar-item w3-button">
+          <img src="imagenes/mesero.png" width="30"> MESERO:<span class="fw-bold">User</span>
+        </a>
+      </div>
+    </div>
+    
+  <!-- Menu Container -->
+  <div class="w3-container w3-black w3-padding-64 w3-xxlarge" id="menu">
+    <div class="w3-content">
+        <h1 class="w3-center w3-jumbo" style="margin-bottom:64px"><img src="imagenes/mesa.png" width="80"> ENTREGAR A MESAS</h1>
+        <div class="container">
+          <div class="row justify-content-around">
+            <div class="col-12 col-md-6">
+              <div class="w3-row w3-center w3-border w3-border-dark-grey">
+                <a href="javascript:void(0)" onclick="openMenu(event, 'Pizza');" id="myLink">
+                  <div class="w3-col s12 tablink w3-padding-large w3-hover-red">🗒️ POR ENTREGAR</div>
+                </a>
+              </div>
+              <div id="PorEntregar" class="w3-container menu w3-padding-32 w3-white">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Platillo</th>
+                      <th>Mesa</th>
+                      <th>Cambiar Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- aqui va el listado --> 
+                    <!-- aqui va el listado -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="w3-row w3-center w3-border w3-border-dark-grey">
+                <a href="javascript:void(0)" onclick="openMenu(event, 'Pasta');">
+                  <div class="w3-col s12 tablink w3-padding-large w3-hover-red">✅ ENTREGADO</div>
+                </a>
+              </div>
+              <div id="Entregado" class="w3-container menu w3-padding-32 w3-white">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Platillo</th>
+                      <th>Mesa</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- aqui va el listado -->
+                    <!-- aqui va el listado -->
+                  </tbody>
+                  
+                </table>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-48 w3-xxlarge">
+    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+  </footer>
+  
+  <script>
+  // Tabbed Menu
+  function openMenu(evt, menuName) {
+    var i, x, tablinks;
+    x = document.getElementsByClassName("menu");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < x.length; i++) {
+       tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+    }
+    document.getElementById(menuName).style.display = "block";
+    evt.currentTarget.firstElementChild.className += " w3-red";
+  }
+  //document.getElementById("myLink").click();
+  </script>
+  <script src="js/mesero.js"></script>
+  </body>
+  </html>
+

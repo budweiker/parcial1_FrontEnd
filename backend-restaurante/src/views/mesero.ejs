@@ -1,0 +1,107 @@
+<%- include('partials/_header.ejs') %>
+
+
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            <div class="text-center py-3">
+                <h2 class="display-4">Entregas</h2>
+            </div>
+            <!-- Primer cuadro -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Por entregar</h2>
+                    </div>
+                    <table class="table table-bordered table-hover">
+                        <!--thead es la cabecera de la tabla-->
+                        <thead>
+                            <!--tr es una fila-->
+                            <tr>
+                                <th>N</th>
+                                <th>Platillo</th>
+                                <th>Cantidad</th>
+                                <th>Cliente</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% if (dataPorEntregar) {%>
+                                <% for (var i=0; i < dataPorEntregar.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <%= dataPorEntregar[i].id %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorEntregar[i].platillo %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorEntregar[i].cantidad %>
+                                        </td>
+                                        <td>
+                                            <%= dataPorEntregar[i].cliente %>
+                                        </td>
+                                        <td>
+                                            <%=console.log(dataPorEntregar[i].id) %>
+                                            <form action="/entragado/<%= dataPorEntregar[i].id %>" method="post">
+                                                <button type="submit" class="btn btn-success">Entregar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Segundo cuadro -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Entregado / Finalizado</h2>
+                    </div>
+                    <table class="table table-bordered table-hover">
+                        <!--thead es la cabecera de la tabla-->
+                        <thead>
+                            <!--tr es una fila-->
+                            <tr>
+                                <th>N</th>
+                                <th>Platillo</th>
+                                <th>Cantidad</th>
+                                <th>Cliente</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% if (dataEntregado) {%>
+                                <% for (var i=0; i < dataEntregado.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <%= dataEntregado[i].id %>
+                                        </td>
+                                        <td>
+                                            <%= dataEntregado[i].platillo %>
+                                        </td>
+                                        <td>
+                                            <%= dataEntregado[i].cantidad %>
+                                        </td>
+                                        <td>
+                                            <%= dataEntregado[i].cliente %>
+                                        </td>
+                                        <td>
+                                            FINALIZADO
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <%- include('partials/_footer.ejs') %>

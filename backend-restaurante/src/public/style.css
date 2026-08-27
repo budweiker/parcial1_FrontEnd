@@ -1,0 +1,68 @@
+/* Estilos generales para el contenedor del menú */
+.menu-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  /* Estilos para cada elemento del menú */
+  .menu-item {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    flex: 1;
+  }
+  
+  /* Estilos para el encabezado del elemento del menú */
+  .menu-item-header h2 {
+    font-size: 24px;
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  /* Estilos para los detalles del platillo */
+  .menu-item-details h3 {
+    font-size: 20px;
+    margin: 0;
+    padding-top: 10px;
+  }
+  
+  /* Estilos para el precio */
+  .menu-price {
+    font-size: 24px;
+    float: right;
+    color: #ff5733; /* Color de precio destacado */
+  }
+  
+  /* Estilos para la descripción del platillo */
+  .menu-item-description {
+    font-size: 16px;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  /* Estilos para los campos de entrada y el botón */
+  .menu-form .menu-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .menu-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff5733;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .menu-button:hover {
+    background-color: #ff6f4a; /* Cambia el color al pasar el cursor sobre el botón */
+  }

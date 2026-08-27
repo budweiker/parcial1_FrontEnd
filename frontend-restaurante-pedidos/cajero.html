@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CAJERO - HOME</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top w3-hide-small">
+  <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+    <a href="#" class="w3-bar-item w3-button">HOME</a>
+    <a href="pedidos.html" class="w3-bar-item w3-button"><img src="imagenes/pedidos.png" width="30"> VER PEDIDOS</a>
+    <a href="chef.html" class="w3-bar-item w3-button"><img src="imagenes/chef.png" width="30"> SESION CHEF</a>
+    <a href="mesero.html" class="w3-bar-item w3-button"><img src="imagenes/mesero.png" width="30"> SESION MESERO</a> 
+    <a href="index.html"  class="me-5 mt-1 fs-4 btn btn-danger float-end w3-bar-item w3-button">SALIR</a>
+    <a href="#" class="me-5 mt-1 fs-4 float-end w3-bar-item w3-button">
+        <img src="imagenes/cajero.png" width="30">CAJERO:<span class="fw-bold">User</span>
+    </a>
+  </div>
+</div>
+  
+<!-- Menu Container -->
+<div class="w3-container w3-black w3-padding-64 w3-xxlarge" id="menu">
+  <div class="w3-content">
+  
+    <h1 class="w3-center w3-jumbo" style="margin-bottom:64px"><img src="imagenes/menu.png" width="50"> THE MENU</h1>
+    <div class="w3-row w3-center w3-border w3-border-dark-grey">
+      <a href="javascript:void(0)" onclick="openMenu(event, 'Pizza');" id="myLink">
+        <div class="w3-col s4 tablink w3-padding-large w3-hover-red">Pizza</div>
+      </a>
+      <a href="javascript:void(0)" onclick="openMenu(event, 'Pasta');">
+        <div class="w3-col s4 tablink w3-padding-large w3-hover-red">Pasta</div>
+      </a>
+      <a href="javascript:void(0)" onclick="openMenu(event, 'Starter');">
+        <div class="w3-col s4 tablink w3-padding-large w3-hover-red">Starter</div>
+      </a>
+    </div>
+
+    <div id="Pizza" class="w3-container menu w3-padding-32 w3-white">
+        <h1><b id="nombrePizza">Margherita</b> <span class="precios precioPizza  w3-right w3-tag w3-dark-grey w3-round">$12.500</span></h1>
+        <p id="ingredientesPizza" class="text-muted">Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)</p>
+        <hr>
+        <!-- form -->
+        <div class="w3-container w3-padding-64 w3-blue-grey w3-grayscale-min w3-xlarge">
+          <div class="w3-content">
+              <form>
+                <p>
+                  <select required class="platillo fs-4 w3-input w3-padding-16 w3-border" name="platillo"  id="TipoPizza" onchange="actualizarIngredientesPizza(), actualizarPrecioPizza()">
+                    <option value="Formaggio">Formaggio</option>
+                    <option value="Margherita">Margherita</option>
+                    <option value="Chicken">Chicken</option>
+                    <option value="Pineapple'o'clock">Pineapple'o'clock</option>
+                    <option value="Meat Town">Meat Town</option>
+                    <option value="Parma">Parma</option>
+                  </select>
+                </p>
+              
+              <p><input class="cliente w3-input w3-padding-16 w3-border" type="text" placeholder="Cliente" required name="NameCliente"></p>
+              <p><input class="cantidad w3-input w3-padding-16 w3-border" type="number" placeholder="Cantidad" required name="People"></p>
+              <p><input class="fecha w3-input w3-padding-16 w3-border" type="datetime-local" placeholder="Date and time" required name="date" value="2025-11-16T20:00"></p>
+              <p><input class="observaciones w3-input w3-padding-16 w3-border" type="text" placeholder="Observaciones" required name="Observaciones"></p>
+              
+              <p><button class="btn-pedido w3-button w3-blue w3-hover-red w3-block" type="button">PEDIR</button></p>
+              </form>
+          </div>
+        </div>
+        <!-- form -->
+    </div>
+
+    
+    <div id="Pasta" class="w3-container menu w3-padding-32 w3-white">
+      <h1><b id="nombrePasta">Lasagna</b> <span class="w3-tag w3-grey w3-round">Popular</span> <span class="precios precioPasta w3-right w3-tag w3-dark-grey w3-round">$13.500</span></h1>
+      <p id="ingredientesPasta" class="w3-text-grey">Special sauce, mozzarella, parmesan, ground beef</p>
+      <hr>
+      <!-- form -->
+        <div class="w3-container w3-padding-64 w3-blue-grey w3-grayscale-min w3-xlarge">
+          <div class="w3-content">
+              <form>
+                <p>
+                  <select id="TipoPastaSelect" onchange="actualizarIngredientesPasta(), actualizarPrecioPasta()" name="platillo" class="fs-4 platillo w3-input w3-padding-16 w3-border form-control">
+                    <option value="Lasagna">Lasagna</option>
+                    <option value="Ravioli">Ravioli</option>
+                    <option value="Spaghetti Classica">Spaghetti Classica</option>
+                    <option value="Seafood pasta">Seafood pasta</option>
+                </select>
+                </p>
+                <p><input class="cliente w3-input w3-padding-16 w3-border" type="text" placeholder="Cliente" required name="NameCliente"></p>
+                <p><input class="cantidad w3-input w3-padding-16 w3-border" type="number" placeholder="Cantidad" required name="People"></p>
+                <p><input class="fecha w3-input w3-padding-16 w3-border" type="datetime-local" placeholder="Date and time" required name="date" value="2025-11-16T20:00"></p>
+                <p><input class="observaciones w3-input w3-padding-16 w3-border" type="text" placeholder="Observaciones" required name="Observaciones"></p>
+                
+                <p><button class="btn-pedido w3-button w3-blue w3-hover-red w3-block" type="button">PEDIR</button></p>
+              </form>
+          </div>
+        </div>
+    </div>
+
+    <div id="Starter" class="w3-container menu w3-padding-32 w3-white">
+      <h1><b id="nombreentrada">Today's Soup</b> <span class="w3-tag w3-grey w3-round">Seasonal</span><span class="precios precioSopa w3-right w3-tag w3-dark-grey w3-round">$5.500</span></h1>
+      <p id="IngredienteSopa" class="w3-text-grey">Ask the waiter</p>
+      <hr>
+    <!-- form -->
+    <div class="w3-container w3-padding-64 w3-blue-grey w3-grayscale-min w3-xlarge">
+        <div class="w3-content">
+            <form>
+              <p>
+                <select id="TipoSopaSelect" onchange="showIngredients(), showPrice()" name="platillo" class="fs-4 platillo form-control w3-input w3-padding-16 w3-border">
+                  <option value="Today's Soup">Today's Soup</option>
+                  <option value="Bruschetta">Bruschetta</option>
+                  <option value="Garlic bread">Garlic bread</option>
+                  <option value="Tomozzarella">Tomozzarella</option>
+              </select>
+              </p>
+              <p><input class="cliente w3-input w3-padding-16 w3-border" type="text" placeholder="Cliente" required name="NameCliente"></p>
+              <p><input class="cantidad w3-input w3-padding-16 w3-border" type="number" placeholder="Cantidad" required name="People"></p>
+              <p><input class="fecha w3-input w3-padding-16 w3-border" type="datetime-local" placeholder="Date and time" required name="date" value="2025-11-16T20:00"></p>
+              <p><input class="observaciones w3-input w3-padding-16 w3-border" type="text" placeholder="Observaciones" required name="Observaciones"></p>
+              
+              <p><button class="btn-pedido w3-button w3-blue w3-hover-red w3-block" type="button">PEDIR</button></p>
+            </form>
+        </div>
+        </div>
+      
+    </div><br>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-48 w3-xxlarge">
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+</footer>
+
+<script>
+// Tabbed Menu
+function openMenu(evt, menuName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("menu");
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+     tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+  }
+  document.getElementById(menuName).style.display = "block";
+  evt.currentTarget.firstElementChild.className += " w3-red";
+}
+document.getElementById("myLink").click();
+
+function actualizarPrecioPizza() {
+var precio = document.querySelector(".precioPizza");
+var tipoPizza = document.getElementById("TipoPizza").value;
+
+switch (tipoPizza) {
+    case "Formaggio":
+        precio.innerHTML = "$15.500";
+        precio.value = "$15.500";
+        break;
+    case "Margherita":
+        precio.innerHTML = "$12.500";
+        precio.value = "$12.500";
+        break;
+    case "Chicken":
+        precio.innerHTML = "$17.000";
+        precio.value = "$12.500";
+        break;
+    case "Pineapple'o'clock":
+        precio.innerHTML = "$16.500";
+        precio.value = "$12.500";
+        break;
+    case "Meat Town":
+        precio.innerHTML = "$20.000";
+        precio.value = "$12.500";
+        break;
+    case "Parma":
+        precio.innerHTML = "$21.500";
+        precio.value = "$12.500";
+        break;
+    default:
+        precio.innerHTML = "$15.500";
+        precio.value = "$12.500";
+}
+}
+
+function actualizarIngredientesPizza() {
+var ingredientes = document.getElementById("ingredientesPizza");
+var nombrePizza = document.getElementById("nombrePizza");
+var tipoPizza = document.getElementById("TipoPizza").value;
+
+switch (tipoPizza) {
+    case "Formaggio":
+        ingredientes.innerHTML = "Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)";
+        nombrePizza.textContent = tipoPizza
+        break;
+    case "Margherita":
+        ingredientes.innerHTML = "Fresh tomatoes, fresh mozzarella, fresh basil";
+        nombrePizza.textContent = tipoPizza
+        break;
+    case "Chicken":
+        ingredientes.innerHTML = "Fresh tomatoes, mozzarella, chicken, onions";
+        nombrePizza.textContent = tipoPizza
+        break;
+    case "Pineapple'o'clock":
+        ingredientes.innerHTML = "Fresh tomatoes, mozzarella, fresh pineapple, bacon, fresh basil";
+        nombrePizza.textContent = tipoPizza
+        break;
+    case "Meat Town":
+        ingredientes.innerHTML = "Fresh tomatoes, mozzarella, hot pepporoni, hot sausage, beef, chicken";
+        nombrePizza.textContent = tipoPizza
+        break;
+    case "Parma":
+        ingredientes.innerHTML = "Fresh tomatoes, mozzarella, parma, bacon, fresh arugula";
+        nombrePizza.textContent = tipoPizza
+        break;
+    default:
+        ingredientes.innerHTML = "Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)";
+        nombrePizza.textContent = tipoPizza
+}
+}
+
+// Agregar un event listener para el evento shown.bs.tab para la pestaña "Pizza"
+//document.getElementById("pizza-tab").addEventListener("shown.bs.tab", function () {
+actualizarPrecioPizza();
+actualizarIngredientesPizza();
+//});
+
+    function actualizarIngredientesPasta() {
+        var ingredientes = document.getElementById("ingredientesPasta");
+        var nombrePasta = document.getElementById("nombrePasta");
+        var tipoPasta = document.getElementById("TipoPastaSelect").value;
+
+        switch (tipoPasta) {
+            case "Lasagna":
+                ingredientes.innerHTML = "Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)";
+                nombrePasta.textContent = tipoPasta
+                break;
+            case "Ravioli":
+                ingredientes.innerHTML = "Ravioli filled with cheese";
+                nombrePasta.textContent = tipoPasta
+                break;
+            case "Spaghetti Classica":
+                ingredientes.innerHTML = "Fresh tomatoes, onions, ground beef";
+                nombrePasta.textContent = tipoPasta
+                break;
+            case "Seafood pasta":
+                ingredientes.innerHTML = "Salmon, shrimp, lobster, garlic";
+                nombrePasta.textContent = tipoPasta
+                break;
+            default:
+                ingredientes.innerHTML = "Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)";
+                nombrePasta.textContent = tipoPasta
+        }
+    }
+
+    function actualizarPrecioPasta() {
+        var precio = document.querySelector(".precioPasta");
+        var tipoPasta = document.getElementById("TipoPastaSelect").value;
+
+        switch (tipoPasta) {
+            case "Lasagna":
+                precio.innerHTML = "$13.500";
+                break;
+            case "Ravioli":
+                precio.innerHTML = "$14.500";
+                break;
+            case "Spaghetti Classica":
+                precio.innerHTML = "$11.000";
+                break;
+            case "Seafood pasta":
+                precio.innerHTML = "$25.500";
+                break;
+            default:
+                precio.innerHTML = "$13.500";
+        }
+    }
+
+    function showIngredients() {
+      var nombreentrada = document.getElementById("nombreentrada");
+        var selectedValue = document.getElementById("TipoSopaSelect").value;
+        var ingredientes = document.getElementById("IngredienteSopa");
+
+        switch (selectedValue) {
+            case "Today's Soup":
+                ingredientes.innerHTML = "Ask the waiter";
+                nombreentrada.textContent = selectedValue;
+                break;
+            case "Bruschetta":
+                ingredientes.innerHTML = "Bread with pesto, tomatoes, onion, garlic";
+                nombreentrada.textContent = selectedValue;
+                break;
+            case "Garlic bread":
+                ingredientes.innerHTML = "Grilled ciabatta, garlic butter, onions";
+                nombreentrada.textContent = selectedValue;
+                break;
+            case "Tomozzarella":
+                ingredientes.innerHTML = "Tomatoes and mozzarella";
+                nombreentrada.textContent = selectedValue;
+                break;
+            default:
+                ingredientes.innerHTML = "";
+        }
+    }
+
+    function showPrice() {
+        var selectedValue = document.getElementById("TipoSopaSelect").value;
+        var precio = document.querySelector(".precioSopa");
+
+        switch (selectedValue) {
+            case "Today's Soup":
+                precio.innerHTML = "$5.500";
+                break;
+            case "Bruschetta":
+                precio.innerHTML = "$8.500";
+                break;
+            case "Garlic bread":
+                precio.innerHTML = "$9.500";
+                break;
+            case "Tomozzarella":
+                precio.innerHTML = "$7.500";
+                break;
+            default:
+                precio.innerHTML = "";
+        }
+    }
+
+</script>
+<script src="js/cajero.js"></script>
+</body>
+</html>

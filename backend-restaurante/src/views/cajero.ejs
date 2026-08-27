@@ -1,0 +1,141 @@
+<%- include('partials/_header.ejs') %>
+
+    <div class="container-fluid">
+        <div class="text-center py-5">
+            <h2 class="display-4">THE MENU</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="pizza-tab" data-toggle="pill" href="#pizza" role="tab" aria-controls="pizza" aria-selected="true" onclick="openMenu(event, 'pizza')">Pizza</a>
+                    <a class="nav-link" id="pasta-tab" data-toggle="pill" href="#pasta" role="tab" aria-controls="pasta" aria-selected="false" onclick="openMenu(event, 'pasta')">Pasta</a>
+                    <a class="nav-link" id="starter-tab" data-toggle="pill" href="#starter" role="tab" aria-controls="starter" aria-selected="false" onclick="openMenu(event, 'starter')">Starter</a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="tab-content" id="v-pills-tabContent">
+                    
+                    <form action="/cajero" method="post">
+                      <!-- PIZZA -->
+                   <!-- Dentro de la pestaña "Pizza" -->
+                    <div class="tab-pane fade show active" id="pizza" role="tabpanel" aria-labelledby="pizza-tab" name="pizza">
+                      <div class="card">
+                          <div class="card-header">
+                              <h2 class="card-title">Pizzas</h2>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                                  <label for="TipoPizza">Seleccione su pizza</label>
+                                  <select id="TipoPizza" name="platillo" class="form-control" onchange="actualizarIngredientesPizza(), actualizarPrecioPizza()">
+                                      <option value="Formaggio">Formaggio</option>
+                                      <option value="Margherita">Margherita</option>
+                                      <option value="Chicken">Chicken</option>
+                                      <option value="Pineapple'o'clock">Pineapple'o'clock</option>
+                                      <option value="Meat Town">Meat Town</option>
+                                      <option value="Parma">Parma</option>
+                                  </select>
+                              </div>
+                              <p id="ingredientesPizza" class="text-muted">Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)</p>
+                              <p id="precioPizza" class="text-muted">$15</p>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Cliente" required name="cliente">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" placeholder="Cantidad" required name="cantidad">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="datetime-local" placeholder="Fecha" required name="fecha" value="2023-09-13T20:00">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Observaciones" required name="observaciones">
+                    </div>
+                    <br>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">PEDIR</button>
+  
+                    </div>
+                   
+                    </form>
+
+                    <!-- PASTA -->
+                    <form action="/cajero" method="post">
+                    <div class="tab-pane fade show active" id="pasta" role="tabpanel" aria-labelledby="pasta-tab" name="pasta">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Pastas</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="TipoPastaSelect">Seleccione su pasta</label>
+                                    <select id="TipoPastaSelect" onchange="actualizarIngredientesPasta(), actualizarPrecioPasta()" name="platillo" class="form-control">
+                                        <option value="Lasagna">Lasagna</option>
+                                        <option value="Ravioli">Ravioli</option>
+                                        <option value="Spaghetti Classica">Spaghetti Classica</option>
+                                        <option value="Seafood pasta">Seafood pasta</option>
+                                    </select>
+                                </div>
+                                <p id="ingredientesPasta" class="text-muted">Four cheeses (mozzarella, parmesan, pecorino, jarlsberg)</p>
+                                <p id="precioPasta" class="text-muted">$</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <input class="form-control" type="text" placeholder="Cliente" required name="cliente">
+                      </div>
+                      <div class="form-group">
+                          <input class="form-control" type="number" placeholder="Cantidad" required name="cantidad">
+                      </div>
+                      <div class="form-group">
+                          <input class="form-control" type="datetime-local" placeholder="Fecha" required name="fecha" value="2023-09-13T20:00">
+                      </div>
+                      <div class="form-group">
+                          <input class="form-control" type="text" placeholder="Observaciones" required name="observaciones">
+                      </div>
+                      <br>
+                      <button class="btn btn-primary btn-lg btn-block" type="submit">PEDIR</button>
+    
+                    </div>
+                  </form>
+                    <!-- STARTER -->
+                    <form action="/cajero" method="post">
+                    <div class="tab-pane fade show active" id="starter" role="tabpanel" aria-labelledby="starter-tab" name="starter">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Entradas</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="TipoSopaSelect">Seleccione su entrada</label>
+                                    <select id="TipoSopaSelect" onchange="showIngredients(), showPrice()" name="platillo" class="form-control">
+                                        <option value="Today's Soup">Today's Soup</option>
+                                        <option value="Bruschetta">Bruschetta</option>
+                                        <option value="Garlic bread">Garlic bread</option>
+                                        <option value="Tomozzarella">Tomozzarella</option>
+                                    </select>
+                                </div>
+                                <p id="IngredienteSopa" class="text-muted">Ask the waiter</p>
+                                <p id="PrecioSopa" class="text-muted">$</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <input class="form-control" type="text" placeholder="Cliente" required name="cliente">
+                      </div>
+                      <div class="form-group">
+                          <input class="form-control" type="number" placeholder="Cantidad" required name="cantidad">
+                      </div>
+                      <div class="form-group">
+                          <input class="form-control" type="datetime-local" placeholder="Fecha" required name="fecha" value="2023-09-13T20:00">
+                      </div>
+                      <div class="form-group">
+                          <input class="form-control" type="text" placeholder="Observaciones" required name="observaciones">
+                      </div>
+                      <br>
+                      <button class="btn btn-primary btn-lg btn-block" type="submit">PEDIR</button>
+    
+                    </div>
+                  </form>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <%- include('partials/_footer.ejs') %>
