@@ -1,7 +1,7 @@
 // cajero.js
 // Lógica para crear pedidos desde cajero.html (pestañas Pizza / Pasta / Starter)
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'https://localhost:3005'; // ej: https://mi-backend.com/api
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.btn-pedido').forEach(function (btn) {
