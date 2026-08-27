@@ -1,7 +1,10 @@
 // cajero.js
-// Lógica para crear pedidos desde cajero.html
+// Lógica para crear pedidos desde cajero.html (pestañas Pizza / Pasta / Starter)
+// Coincide con: POST /pedido -> controller.pedido
+// El backend exige: platillo, precio (number), cantidad (number), cliente, fecha
+// "observaciones" es opcional.
 
-const API_BASE = 'http://localhost:3005';
+const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.btn-pedido').forEach(function (btn) {
@@ -34,24 +37,29 @@ async function crearPedido(boton) {
   const precioTexto = precioTag ? precioTag.textContent.replace(/[^0-9]/g, '') : '0';
   const precio = parseInt(precioTexto, 10) || 0;
 
-  if (!cliente || !cantidad || !fecha) {
+  if (!cliente || !cantidad || !fecha || !precio) {
     alert('Por favor completa cliente, cantidad y fecha.');
     return;
   }
 
-  const pedido = {
-    items: [{ name: platillo, qty: cantidad, price: precio }],
-    client: cliente,
-    observations: observaciones,
-    status: 'pending',
-    createdAt: fecha
+  // Nota: el backend actual (controller.pedido) no guarda un campo "mesa"
+  // aunque aparece en el ejemplo de routes.http; el formulario de cajero.html
+  // tampoco tiene un input para la mesa. Si luego agregas ese campo en el
+  // formulario y en el controller, solo hay que añadirlo aquí también.
+  const nuevoPedido = {
+    platillo,
+    precio,
+    cantidad,
+    observaciones,
+    cliente,
+    fecha
   };
 
   try {
-    const response = await fetch(`${API_BASE}/orders`, {
+    const response = await fetch(`${API_BASE}/pedido`, {
       method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify(pedido)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nuevoPedido)
     });
 
     const data = await response.json().catch(() => ({}));
@@ -67,15 +75,4 @@ async function crearPedido(boton) {
     console.error('Error al crear pedido:', error);
     alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
-}
-
-function getToken() {
-  return localStorage.getItem('token');
-}
-
-function authHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + getToken()
-  };
 }

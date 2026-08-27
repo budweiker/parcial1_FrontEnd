@@ -1,5 +1,6 @@
 // login.js
 // Lógica de inicio de sesión para login.html
+// Coincide con: POST /login -> controller.login_in (routes.js / controller.js)
 
 const API_BASE = 'http://localhost:3005';
 
@@ -36,7 +37,7 @@ async function iniciarSesion() {
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
 
-    redirigirSegunRol(data.user ? data.user.role : null);
+    redirigirSegunRol(data.user ? data.user.rol : null);
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     alert('No fue posible conectar con el servidor en ' + API_BASE);

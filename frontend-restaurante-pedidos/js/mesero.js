@@ -8,18 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function cargarPedidosMesero() {
-  await cargarListaEntrega('ready', '#PorEntregar tbody', true);
-  await cargarListaEntrega('delivered', '#Entregado tbody', false);
-}
-
-async function cargarListaEntrega(estado, selectorTbody, mostrarBoton) {
-  const tbody = document.querySelector(selectorTbody);
-  if (!tbody) return;
+  const tbodyPorEntregar = document.querySelector('#PorEntregar tbody');
+  const tbodyEntregado = document.querySelector('#Entregado tbody');
+  if (!tbodyPorEntregar || !tbodyEntregado) return;
 
   try {
-    const response = await fetch(`${API_BASE}/orders?status=${estado}`, {
-      headers: authHeaders()
-    });
+    const response = await fetch(`${API_BASE}/mesero`);
+    const data = await response.json();
 
     const data = await response.json().catch(() => null);
 
@@ -31,35 +26,32 @@ async function cargarListaEntrega(estado, selectorTbody, mostrarBoton) {
     const pedidos = Array.isArray(data) ? data : (data ? data.orders || [] : []);
     tbody.innerHTML = '';
 
-    if (!pedidos.length) {
-      tbody.innerHTML = '<tr><td colspan="3">No hay pedidos.</td></tr>';
-      return;
-    }
-
-    pedidos.forEach(function (pedido) {
-      tbody.appendChild(renderFilaMesero(pedido, mostrarBoton));
-    });
+    renderPorEntregar(tbodyPorEntregar, porEntregar);
+    renderEntregado(tbodyEntregado, entregado);
   } catch (error) {
     console.error('Error al cargar pedidos:', error);
     tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
   }
 }
 
-function renderFilaMesero(pedido, mostrarBoton) {
-  const tr = document.createElement('tr');
+function renderPorEntregar(tbody, pedidos) {
+  tbody.innerHTML = '';
 
-  const platillos = (pedido.items || []).map(function (item) {
-    return item.qty + 'x ' + item.name;
-  }).join(', ');
+  if (!pedidos.length) {
+    tbody.innerHTML = '<tr><td colspan="3">No hay pedidos.</td></tr>';
+    return;
+  }
 
-  const tdPlatillo = document.createElement('td');
-  tdPlatillo.textContent = platillos;
+  pedidos.forEach(function (pedido) {
+    const tr = document.createElement('tr');
 
-  const tdMesa = document.createElement('td');
-  tdMesa.textContent = pedido.table || pedido.client || '-';
+    const tdPlatillo = document.createElement('td');
+    tdPlatillo.textContent = pedido.cantidad + 'x ' + pedido.platillo;
 
-  const tdEstado = document.createElement('td');
-  if (mostrarBoton) {
+    const tdMesa = document.createElement('td');
+    tdMesa.textContent = pedido.mesa || pedido.cliente || '-';
+
+    const tdEstado = document.createElement('td');
     const btn = document.createElement('button');
     btn.className = 'btn btn-sm btn-success';
     btn.textContent = 'Marcar como entregado';
@@ -67,23 +59,49 @@ function renderFilaMesero(pedido, mostrarBoton) {
       marcarEntregado(pedido.id);
     });
     tdEstado.appendChild(btn);
-  } else {
-    tdEstado.textContent = 'Entregado';
+
+    tr.appendChild(tdPlatillo);
+    tr.appendChild(tdMesa);
+    tr.appendChild(tdEstado);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderEntregado(tbody, pedidos) {
+  tbody.innerHTML = '';
+
+  if (!pedidos.length) {
+    tbody.innerHTML = '<tr><td colspan="3">No hay pedidos entregados.</td></tr>';
+    return;
   }
 
-  tr.appendChild(tdPlatillo);
-  tr.appendChild(tdMesa);
-  tr.appendChild(tdEstado);
+  pedidos.forEach(function (pedido) {
+    const tr = document.createElement('tr');
 
-  return tr;
+    const tdPlatillo = document.createElement('td');
+    tdPlatillo.textContent = pedido.cantidad + 'x ' + pedido.platillo;
+
+    const tdMesa = document.createElement('td');
+    tdMesa.textContent = pedido.mesa || pedido.cliente || '-';
+
+    const tdEstado = document.createElement('td');
+    tdEstado.textContent = 'Entregado';
+
+    tr.appendChild(tdPlatillo);
+    tr.appendChild(tdMesa);
+    tr.appendChild(tdEstado);
+
+    tbody.appendChild(tr);
+  });
 }
 
 async function marcarEntregado(id) {
   try {
-    const response = await fetch(`${API_BASE}/orders/${id}`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ status: 'delivered' })
+    const response = await fetch(`${API_BASE}/entregado`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
     });
 
     const data = await response.json().catch(() => ({}));
@@ -98,15 +116,4 @@ async function marcarEntregado(id) {
     console.error('Error al actualizar pedido:', error);
     alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
-}
-
-function getToken() {
-  return localStorage.getItem('token');
-}
-
-function authHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + getToken()
-  };
 }
