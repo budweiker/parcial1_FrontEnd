@@ -1,7 +1,7 @@
 // cajero.js
-// Lógica para crear pedidos desde cajero.html (pestañas Pizza / Pasta / Starter)
+// Lógica para crear pedidos desde cajero.html
 
-const API_BASE = 'https://localhost:3005'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005';
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.btn-pedido').forEach(function (btn) {
@@ -12,8 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function crearPedido(boton) {
-  // Cada botón "PEDIR" vive dentro de un <form> propio de su pestaña
-  // (Pizza, Pasta o Starter). Buscamos los campos dentro de ese form.
   const form = boton.closest('form');
   if (!form) return;
 
@@ -25,7 +23,6 @@ async function crearPedido(boton) {
 
   if (!platilloSelect.closest('#Pizza, #Pasta, #Starter')) return;
 
-  // El precio se muestra en el contenedor de la pestaña activa (h1), no dentro del form
   const contenedorPestaña = form.closest('.menu');
   const precioTag = contenedorPestaña ? contenedorPestaña.querySelector('.precios') : null;
 
@@ -57,8 +54,9 @@ async function crearPedido(boton) {
       body: JSON.stringify(pedido)
     });
 
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || (data.success !== undefined && !data.success)) {
       alert(data.message || 'No fue posible registrar el pedido.');
       return;
     }
@@ -67,7 +65,7 @@ async function crearPedido(boton) {
     form.reset();
   } catch (error) {
     console.error('Error al crear pedido:', error);
-    alert('No fue posible conectar con el servidor. Intenta nuevamente.');
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }
 

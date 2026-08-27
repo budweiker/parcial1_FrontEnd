@@ -1,7 +1,7 @@
 // pedidos.js
-// Lógica de pedidos.html: vista administrativa con todos los pedidos
+// Lógica de pedidos.html
 
-const API_BASE = 'PON_AQUI_LA_API_BASE'; // ej: https://mi-backend.com/api
+const API_BASE = 'http://localhost:3005';
 
 const ESTADOS_LEGIBLES = {
   pending: 'Por preparar',
@@ -24,12 +24,14 @@ async function cargarTodosLosPedidos() {
       headers: authHeaders()
     });
 
-    if (!response.ok) {
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || (data && data.success === false)) {
       tbody.innerHTML = '<tr><td colspan="4">No fue posible cargar los pedidos.</td></tr>';
       return;
     }
 
-    const pedidos = await response.json();
+    const pedidos = Array.isArray(data) ? data : (data ? data.orders || [] : []);
     tbody.innerHTML = '';
 
     if (!pedidos.length) {
@@ -42,7 +44,7 @@ async function cargarTodosLosPedidos() {
     });
   } catch (error) {
     console.error('Error al cargar pedidos:', error);
-    tbody.innerHTML = '<tr><td colspan="4">No fue posible conectar con el servidor.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
   }
 }
 
@@ -92,15 +94,17 @@ async function cancelarPedido(id) {
       headers: authHeaders()
     });
 
-    if (!response.ok) {
-      alert('No fue posible cancelar el pedido.');
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || (data.success !== undefined && !data.success)) {
+      alert(data.message || 'No fue posible cancelar el pedido.');
       return;
     }
 
     cargarTodosLosPedidos();
   } catch (error) {
     console.error('Error al cancelar pedido:', error);
-    alert('No fue posible conectar con el servidor.');
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }
 
