@@ -2,7 +2,7 @@
 // Lógica de inicio de sesión para login.html
 // Coincide con: POST /login -> controller.login_in (routes.js / controller.js)
 
-const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
+const API_BASE = 'http://localhost:3005';
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnIniciar = document.querySelector('.btn-iniciar');
@@ -27,21 +27,20 @@ async function iniciarSesion() {
       body: JSON.stringify({ user, password })
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
-    // El backend responde { success, message, user } — no hay token.
-    if (!response.ok || !data.success) {
-      alert(data.message || 'Usuario o contraseña incorrecta.');
+    if (!response.ok || (data.success !== undefined && !data.success)) {
+      alert(data.message || 'Usuario o contraseña incorrectos.');
       return;
     }
 
-    // Guardamos el usuario (incluye "rol") para usarlo en las demás páginas.
+    localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
 
     redirigirSegunRol(data.user ? data.user.rol : null);
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
-    alert('No fue posible conectar con el servidor. Verifica que el backend esté corriendo en ' + API_BASE);
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }
 

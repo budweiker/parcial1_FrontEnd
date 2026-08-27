@@ -1,9 +1,7 @@
 // mesero.js
-// Lógica de mesero.html: lista "Por entregar" (estado "entregar") y "Entregado" (estado "entregado")
-// Coincide con: GET /mesero -> controller.mesero
-//               PUT /entregado { id } -> controller.finalizado
+// Lógica de mesero.html
 
-const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
+const API_BASE = 'http://localhost:3005';
 
 document.addEventListener('DOMContentLoaded', function () {
   cargarPedidosMesero();
@@ -18,21 +16,21 @@ async function cargarPedidosMesero() {
     const response = await fetch(`${API_BASE}/mesero`);
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      tbodyPorEntregar.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
-      tbodyEntregado.innerHTML = '';
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || (data && data.success === false)) {
+      tbody.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
       return;
     }
 
-    const porEntregar = (data.data && data.data.porEntregar) || [];
-    const entregado = (data.data && data.data.entregado) || [];
+    const pedidos = Array.isArray(data) ? data : (data ? data.orders || [] : []);
+    tbody.innerHTML = '';
 
     renderPorEntregar(tbodyPorEntregar, porEntregar);
     renderEntregado(tbodyEntregado, entregado);
   } catch (error) {
-    console.error('Error al cargar pedidos del mesero:', error);
-    tbodyPorEntregar.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor.</td></tr>';
-    tbodyEntregado.innerHTML = '';
+    console.error('Error al cargar pedidos:', error);
+    tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
   }
 }
 
@@ -106,9 +104,9 @@ async function marcarEntregado(id) {
       body: JSON.stringify({ id })
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
-    if (!response.ok || !data.success) {
+    if (!response.ok || (data.success !== undefined && !data.success)) {
       alert(data.message || 'No fue posible actualizar el estado del pedido.');
       return;
     }
@@ -116,6 +114,6 @@ async function marcarEntregado(id) {
     cargarPedidosMesero();
   } catch (error) {
     console.error('Error al actualizar pedido:', error);
-    alert('No fue posible conectar con el servidor.');
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }

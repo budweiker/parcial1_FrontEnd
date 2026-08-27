@@ -1,10 +1,7 @@
 // chef.js
-// Lógica de chef.html: lista "Por preparar" (estado "preparar") y "Preparando" (estado "preparando")
-// Coincide con: GET /chef -> controller.chef
-//               PUT /preparando { id } -> pasa el pedido a "preparando"
-//               PUT /listo { id } -> pasa el pedido a "entregar" (queda listo para el mesero)
+// Lógica de chef.html
 
-const API_BASE = 'http://localhost:3005'; // cambia esto por la URL real cuando despliegues el backend
+const API_BASE = 'http://localhost:3005';
 
 document.addEventListener('DOMContentLoaded', function () {
   cargarPedidosChef();
@@ -19,21 +16,26 @@ async function cargarPedidosChef() {
     const response = await fetch(`${API_BASE}/chef`);
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      tbodyPorPreparar.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
-      tbodyPreparando.innerHTML = '';
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || (data && data.success === false)) {
+      tbody.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
       return;
     }
 
-    const porPreparar = (data.data && data.data.porPreparar) || [];
-    const preparando = (data.data && data.data.preparando) || [];
+    const pedidos = Array.isArray(data) ? data : (data ? data.orders || [] : []);
+    tbody.innerHTML = '';
+
+    if (!pedidos.length) {
+      tbody.innerHTML = '<tr><td colspan="3">No hay pedidos.</td></tr>';
+      return;
+    }
 
     renderTabla(tbodyPorPreparar, porPreparar, 'Empezar a preparar', pasarAPreparando);
     renderTabla(tbodyPreparando, preparando, 'Marcar como listo', pasarAListo);
   } catch (error) {
-    console.error('Error al cargar pedidos del chef:', error);
-    tbodyPorPreparar.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor.</td></tr>';
-    tbodyPreparando.innerHTML = '';
+    console.error('Error al cargar pedidos:', error);
+    tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
   }
 }
 
@@ -87,9 +89,9 @@ async function actualizarEstado(endpoint, id) {
       body: JSON.stringify({ id })
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
-    if (!response.ok || !data.success) {
+    if (!response.ok || (data.success !== undefined && !data.success)) {
       alert(data.message || 'No fue posible actualizar el estado del pedido.');
       return;
     }
@@ -97,6 +99,6 @@ async function actualizarEstado(endpoint, id) {
     cargarPedidosChef();
   } catch (error) {
     console.error('Error al actualizar pedido:', error);
-    alert('No fue posible conectar con el servidor.');
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }

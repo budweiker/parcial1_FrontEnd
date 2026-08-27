@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function crearPedido(boton) {
-  // Cada botón "PEDIR" vive dentro de un <form> propio de su pestaña
-  // (Pizza, Pasta o Starter). Buscamos los campos dentro de ese form.
   const form = boton.closest('form');
   if (!form) return;
 
@@ -26,7 +24,8 @@ async function crearPedido(boton) {
   const fechaInput = form.querySelector('.fecha');
   const observacionesInput = form.querySelector('.observaciones');
 
-  // El precio se muestra en el contenedor de la pestaña activa (h1), no dentro del form
+  if (!platilloSelect.closest('#Pizza, #Pasta, #Starter')) return;
+
   const contenedorPestaña = form.closest('.menu');
   const precioTag = contenedorPestaña ? contenedorPestaña.querySelector('.precios') : null;
 
@@ -63,9 +62,9 @@ async function crearPedido(boton) {
       body: JSON.stringify(nuevoPedido)
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
-    if (!response.ok || !data.success) {
+    if (!response.ok || (data.success !== undefined && !data.success)) {
       alert(data.message || 'No fue posible registrar el pedido.');
       return;
     }
@@ -74,6 +73,6 @@ async function crearPedido(boton) {
     form.reset();
   } catch (error) {
     console.error('Error al crear pedido:', error);
-    alert('No fue posible conectar con el servidor. Verifica que el backend esté corriendo en ' + API_BASE);
+    alert('No fue posible conectar con el servidor en ' + API_BASE);
   }
 }
