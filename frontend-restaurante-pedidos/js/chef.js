@@ -14,28 +14,22 @@ async function cargarPedidosChef() {
 
   try {
     const response = await fetch(`${API_BASE}/chef`);
-    const data = await response.json();
-
     const data = await response.json().catch(() => null);
 
     if (!response.ok || (data && data.success === false)) {
-      tbody.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
+      tbodyPorPreparar.innerHTML = '<tr><td colspan="3">No fue posible cargar los pedidos.</td></tr>';
+      tbodyPreparando.innerHTML = '';
       return;
     }
 
-    const pedidos = Array.isArray(data) ? data : (data ? data.orders || [] : []);
-    tbody.innerHTML = '';
-
-    if (!pedidos.length) {
-      tbody.innerHTML = '<tr><td colspan="3">No hay pedidos.</td></tr>';
-      return;
-    }
+    const porPreparar = (data && data.data && Array.isArray(data.data.porPreparar)) ? data.data.porPreparar : [];
+    const preparando = (data && data.data && Array.isArray(data.data.preparando)) ? data.data.preparando : [];
 
     renderTabla(tbodyPorPreparar, porPreparar, 'Empezar a preparar', pasarAPreparando);
     renderTabla(tbodyPreparando, preparando, 'Marcar como listo', pasarAListo);
   } catch (error) {
     console.error('Error al cargar pedidos:', error);
-    tbody.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
+    tbodyPorPreparar.innerHTML = '<tr><td colspan="3">No fue posible conectar con el servidor en ' + API_BASE + '</td></tr>';
   }
 }
 

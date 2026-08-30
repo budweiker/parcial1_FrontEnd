@@ -62,6 +62,14 @@ controller.login_in = (req, res) => {
             // Obtener el registro del usuario
             const userRecord = results[0];
 
+            // Verificar la contraseña (en este proyecto las contraseñas se guardan en texto plano)
+            if (userRecord.password !== password) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Usuario o contraseña incorrecta"
+                });
+            }
+
             // Si la contraseña es correcta, devolver los datos del usuario (sin la contraseña)
             const { password: _, ...userData } = userRecord; // Excluir la contraseña de la respuesta
             res.status(200).json({ 
@@ -186,18 +194,18 @@ controller.pedidos = (req,res)=>{
 //CREAR PEDIDO
 controller.pedido = (req, res) => {
     // Obtén los datos enviados desde el formulario en el cuerpo de la solicitud
-    const { platillo, precio, cantidad, observaciones, cliente, fecha } = req.body;
+    const { platillo, precio, cantidad, observaciones, cliente, fecha, mesa, estado } = req.body;
     console.log("Datos recibidos:", req.body);
 
-    // Validar campos obligatorios
-    if (!platillo || !precio || !cantidad || !cliente || !fecha) {
+    // Validar campos obligatorios (usar null/undefined en lugar de falsy para permitir precio = 0)
+    if (platillo == null || precio == null || cantidad == null || cliente == null || fecha == null) {
         return res.status(400).json({ 
             success: false, 
             message: "Faltan campos obligatorios: platillo, precio, cantidad, cliente o fecha" 
         });
     }
 
-    // Validar tipos de datos
+    // Validar tipos de datos básicos
     if (typeof precio !== 'number' || typeof cantidad !== 'number') {
         return res.status(400).json({ 
             success: false, 
@@ -205,15 +213,24 @@ controller.pedido = (req, res) => {
         });
     }
 
-    // Crear un objeto con los datos del nuevo pedido, asignando el estado por defecto
+    // Normalizar/recortar fecha a formato 'YYYY-MM-DDTHH:MM:SS' para caber en varchar(20)
+    let fechaSafe;
+    if (typeof fecha === 'string') {
+        fechaSafe = fecha.slice(0, 19);
+    } else {
+        fechaSafe = new Date().toISOString().slice(0, 19);
+    }
+
+    // Crear un objeto con los datos del nuevo pedido, incluyendo 'mesa' y asignando el estado por defecto
     const newPedido = { 
         platillo, 
         precio, 
         cantidad, 
         observaciones: observaciones || null, // Si observaciones no está presente, se asigna null
         cliente, 
-        fecha, 
-        estado: "preparar" // Estado por defecto
+        mesa: (mesa !== undefined && mesa !== null) ? mesa : 0,
+        fecha: fechaSafe, 
+        estado: (estado !== undefined && estado !== null) ? estado : "preparar" // Estado por defecto
     };
     console.log("Datos a insertar:", newPedido);
 

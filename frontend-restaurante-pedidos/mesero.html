@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC">
 <link rel="stylesheet" href="css/estilos.css">
@@ -40,7 +41,12 @@
                     <tr>
                       <th>Platillo</th>
                       <th>Mesa</th>
-                      <th>Cambiar Estado</th>
+                      <th>
+                        Cambiar Estado
+                        <button type="button" class="btn btn-success btn-sm ms-2" id="btnAddPorEntregar" title="Agregar">
+                          <i class="bi bi-plus-lg"></i>
+                        </button>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -99,6 +105,41 @@
   }
   //document.getElementById("myLink").click();
   </script>
+  <!-- Modal Agregar Pedido -->
+  <div class="modal fade" id="modalAgregarPedido" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="formAgregarPedido" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Platillo</label>
+            <input type="text" class="form-control" id="inputPlatillo" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Cantidad</label>
+            <input type="number" class="form-control" id="inputCantidad" value="1" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mesa / Cliente</label>
+            <input type="text" class="form-control" id="inputMesa" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Observaciones (opcional)</label>
+            <input type="text" class="form-control" id="inputObservaciones">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/mesero.js"></script>
   </body>
   </html>

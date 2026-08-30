@@ -7,3 +7,35 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Amatic SC", sans-serif}
   background-image: url("https://www.w3schools.com/w3images/pizza.jpg");
   min-height: 90%;
 }
+
+/* Modal oscuro para formAgregarPedido */
+#modalAgregarPedido .modal-content,
+#formAgregarPedido {
+  background-color: #0b0b0b;
+  color: #ffffff;
+}
+
+#formAgregarPedido .form-control {
+  background-color: #111111;
+  color: #ffffff;
+  border: 1px solid #333333;
+}
+
+#formAgregarPedido .form-label {
+  color: #ffffff;
+}
+
+#formAgregarPedido .btn-close {
+  filter: invert(1) brightness(1.2);
+}
+
+#modalAgregarPedido .modal-backdrop.show {
+  background-color: rgba(0,0,0,0.6);
+}
+
+/* Campos específicos en gris claro para mejorar legibilidad */
+#formAgregarPedido #inputCantidad{
+  background-color: #e9ecef;
+  color: #000000;
+  border: 1px solid #cfcfcf;
+}
